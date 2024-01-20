@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysLeaveMapper">
+    
+    <resultMap type="SysLeave" id="SysLeaveResult">
+        <result property="leaveId"    column="leave_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="leaveType"    column="leave_type"    />
+        <result property="leaveTimeType"    column="leave_time_type"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="isLeaveSchool"    column="is_leave_school"    />
+        <result property="address"    column="address"    />
+        <result property="reason"    column="reason"    />
+        <result property="ecpPhone"    column="ecp_phone"    />
+        <result property="approvalId"    column="approval_id"    />
+        <result property="approvalName"    column="approval_name"    />
+        <result property="approvalType"    column="approval_type"    />
+        <result property="approvalAdvice"    column="approval_advice"    />
+        <result property="leaveStatus"    column="leave_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleted"    column="deleted"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysLeaveVo">
+        select leave_id, user_id, user_name, leave_type, leave_time_type, start_time, end_time, is_leave_school, address, reason, ecp_phone, approval_id, approval_name, approval_type, approval_advice, leave_status, create_by, create_time, update_by, update_time, deleted, remark from sys_leave
+    </sql>
+
+    <select id="selectSysLeaveList" parameterType="SysLeave" resultMap="SysLeaveResult">
+        select l.leave_id, l.user_id, l.user_name, l.leave_type, l.leave_time_type,
+         l.start_time, l.end_time, l.is_leave_school, l.address, l.reason, ecp_phone,
+         l.approval_id, l.approval_name, l.approval_type, l.approval_advice,
+         l.leave_status, l.create_by, l.create_time, l.update_by,
+         l.update_time, l.deleted, l.remark from sys_leave l
+        left join sys_user u on u.user_id = l.user_id
+        left join sys_dept d on u.dept_id = d.dept_id
+        <where>
+            <if test="userId != null "> and l.user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and l.user_name like concat('%', #{userName}, '%')</if>
+            <if test="leaveType != null  and leaveType != ''"> and l.leave_type = #{leaveType}</if>
+            <if test="leaveTimeType != null  and leaveTimeType != ''"> and l.leave_time_type = #{leaveTimeType}</if>
+            <if test="startTime != null "> and l.start_time >= #{startTime}</if>
+            <if test="endTime != null "> and l.end_time 	&lt;= #{endTime}</if>
+            <if test="isLeaveSchool != null  and isLeaveSchool != ''"> and l.is_leave_school = #{isLeaveSchool}</if>
+            <if test="address != null  and address != ''"> and l.address = #{address}</if>
+            <if test="reason != null  and reason != ''"> and l.reason = #{reason}</if>
+            <if test="ecpPhone != null  and ecpPhone != ''"> and l.ecp_phone = #{ecpPhone}</if>
+            <if test="approvalId != null "> and l.approval_id = #{approvalId}</if>
+            <if test="approvalName != null  and approvalName != ''"> and l.approval_name like concat('%', #{approvalName}, '%')</if>
+            <if test="approvalType != null  and approvalType != ''"> and l.approval_type = #{approvalType}</if>
+            <if test="leaveStatus != null  and leaveStatus != ''"> and l.leave_status = #{leaveStatus}</if>
+            and l.deleted = 0
+            ${params.dataScope}
+        </where>
+    </select>
+    
+    <select id="selectSysLeaveByLeaveId" parameterType="Long" resultMap="SysLeaveResult">
+        <include refid="selectSysLeaveVo"/>
+        where leave_id = #{leaveId} and deleted = 0
+    </select>
+        
+    <insert id="insertSysLeave" parameterType="SysLeave" useGeneratedKeys="true" keyProperty="leaveId">
+        insert into sys_leave
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="leaveType != null">leave_type,</if>
+            <if test="leaveTimeType != null">leave_time_type,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="isLeaveSchool != null">is_leave_school,</if>
+            <if test="address != null">address,</if>
+            <if test="reason != null">reason,</if>
+            <if test="ecpPhone != null">ecp_phone,</if>
+            <if test="approvalId != null">approval_id,</if>
+            <if test="approvalName != null">approval_name,</if>
+            <if test="approvalType != null">approval_type,</if>
+            <if test="approvalAdvice != null">approval_advice,</if>
+            <if test="leaveStatus != null">leave_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="deleted != null and deleted != ''">deleted,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="leaveType != null">#{leaveType},</if>
+            <if test="leaveTimeType != null">#{leaveTimeType},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="isLeaveSchool != null">#{isLeaveSchool},</if>
+            <if test="address != null">#{address},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="ecpPhone != null">#{ecpPhone},</if>
+            <if test="approvalId != null">#{approvalId},</if>
+            <if test="approvalName != null">#{approvalName},</if>
+            <if test="approvalType != null">#{approvalType},</if>
+            <if test="approvalAdvice != null">#{approvalAdvice},</if>
+            <if test="leaveStatus != null">#{leaveStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="deleted != null and deleted != ''">#{deleted},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLeave" parameterType="SysLeave">
+        update sys_leave
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="leaveType != null">leave_type = #{leaveType},</if>
+            <if test="leaveTimeType != null">leave_time_type = #{leaveTimeType},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="isLeaveSchool != null">is_leave_school = #{isLeaveSchool},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="ecpPhone != null">ecp_phone = #{ecpPhone},</if>
+            <if test="approvalId != null">approval_id = #{approvalId},</if>
+            <if test="approvalName != null">approval_name = #{approvalName},</if>
+            <if test="approvalType != null">approval_type = #{approvalType},</if>
+            <if test="approvalAdvice != null">approval_advice = #{approvalAdvice},</if>
+            <if test="leaveStatus != null">leave_status = #{leaveStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="deleted != null and deleted != ''">deleted = #{deleted},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+        </trim>
+        where leave_id = #{leaveId}
+    </update>
+
+    <update id="deleteSysLeaveByLeaveId" parameterType="Long">
+        update sys_leave set deleted = 1 where leave_id = #{leaveId}
+    </update>
+
+    <update id="deleteSysLeaveByLeaveIds" parameterType="String">
+        update sys_leave set deleted = 1 where leave_id in
+        <foreach item="leaveId" collection="array" open="(" separator="," close=")">
+            #{leaveId}
+        </foreach>
+    </update>
+</mapper>
